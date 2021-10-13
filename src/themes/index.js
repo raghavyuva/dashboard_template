@@ -1,6 +1,10 @@
+import { FaUserSecret } from "react-icons/fa";
 import { base } from "./base";
 import { dark } from "./dark";
 export const DEFAULT_THEME = "base";
+
+
+
 
 export const themes = {
 	base,

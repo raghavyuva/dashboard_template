@@ -1,9 +1,9 @@
 export const dark = {
-	primary: "#ff8906",
-	secondary: "#282c35",
+	primary: "yellow",
+	secondary: "black",
 	negative: "green",
 	positive: "#1c4e80",
 	textPrimary: "#fffffe",
-	backgroundPrimary: "#0f0e17",
+	backgroundPrimary: "#16161a",
 	backgroundSecondary: "#e53170",
 };

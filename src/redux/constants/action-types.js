@@ -12,3 +12,10 @@ export const LoadingTypes = {
 export const ThemeTypes = {
 	SET_THEME: "SET_THEME",
 };
+
+export const settingsType = {
+	general: {
+		THEME_PREFERENCE: "THEME_PREFERENCE",
+	},
+	privacy: {},
+};

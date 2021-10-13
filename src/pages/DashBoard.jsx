@@ -1,62 +1,99 @@
 import React, { useEffect, useState } from 'react'
+import { GiAirBalloon } from 'react-icons/gi';
 import { connect, useDispatch } from 'react-redux'
 import { ApiList, User_Prefix } from '../constants/Api';
 import Card01 from '../global_components/DashBoardCard/Card01';
 import Card02 from '../global_components/DashBoardCard/Card02';
 import Header_Banner from '../global_components/Header_Banner';
+import Card03 from '../global_components/DashBoardCard/Card03';
+import Card04 from '../global_components/DashBoardCard/Card04';
+
 import { NavBar } from '../global_components/NavBar';
 import { setLoading } from '../redux/actions/LoadingActions';
-import { setAllUsers, setToken, setUid, setUser } from '../redux/actions/UserActions';
+import { setAllUsers, setUser } from '../redux/actions/UserActions';
 import { GetRequest } from '../Requests/Request';
 import { applyTheme } from '../themes/themeutil';
 import DrawerContent from '../utils/DrawerContent.jsx';
-const { GET_USER, GET_ALL_USERS } = ApiList;
+import CheckDetailsFetched from '../utils/GetDetails';
+const { GET_ALL_USERS, LIST_USER_BY_ROLE } = ApiList;
 
-export const DashBoard = ({ user, uid, theme }) => {
-
+export const DashBoard = ({
+    user,
+    uid,
+    theme,
+    Students,
+    Token,
+    loading
+}) => {
 
     const dispatch = useDispatch();
     const [toggle, settoggle] = useState(false);
     const [display_banner, setdisplay_banner] = useState(true);
-    const [Greet] = useState(true);
+    const [teachers, setteachers] = useState()
+    CheckDetailsFetched(user, uid);
 
+    const Cards = [
+        {
+            parameters: {
+                teachers
+            },
+            Component: Card03
+        },
+        {
+            parameters: {
+                teachers
+            },
+            Component: Card04
+        },
+        {
+            parameters: {
+                Students
+            },
+            Component: Card02
+        },
+        {
+            parameters: {
+                teachers
+            },
+            Component: Card02
+        },
+
+    ]
+    const Greeting_way = {
+        greettext: "",
+        greetheader: "Welcome",
+        icon: GiAirBalloon
+    }
 
     useEffect(() => {
+        dispatch(setLoading(true))
         applyTheme(theme);
-        FetchUserDetails();
-        FetchAllUsers();
-        return () => {
-        }
+        FetchAdmins();
+        FetchTeachers()
+        dispatch(setLoading(false))
         // eslint-disable-next-line
-    }, [theme])
-
-  
+    }, [])
 
 
-    function FetchUserDetails() {
-        if (user.length <= 0) {
-            dispatch(setLoading(true))
-            let response = GetRequest(process.env.REACT_APP_BACKEND_URL + User_Prefix + GET_USER + uid)
-            response?.then((data) => {
-                dispatch(setUser(data.user));
-                dispatch(setLoading(false))
-            })
-        }
+
+
+
+    function FetchAdmins() {
+
+        let response = GetRequest(process.env.REACT_APP_BACKEND_URL + User_Prefix + LIST_USER_BY_ROLE + 'super_admin', Token);
+        response?.then((data) => {
+            dispatch(setAllUsers(data))
+        })
+
     }
 
 
-
-    function FetchAllUsers() {
-        // dispatch(setLoading(true));
-        // let response = GetRequest(process.env.REACT_APP_BACKEND_URL + User_Prefix + GET_ALL_USERS);
-        // response?.then((data) => {
-        //     // dispatch(setAllUsers(data.user))
-        //     console.log(data);
-        //     // dispatch(setLoading(false));
-        // })
+    function FetchTeachers() {
+        let response = GetRequest(process.env.REACT_APP_BACKEND_URL + User_Prefix + LIST_USER_BY_ROLE + 'teacher', Token);
+        response?.then((data) => {
+            setteachers(data)
+        })
     }
-
- 
 
     return (
         <div className='bg-primary-background '>
@@ -64,19 +101,16 @@ export const DashBoard = ({ user, uid, theme }) => {
                 display_banner={display_banner}
                 setdisplay_banner={setdisplay_banner}
             />
-            <NavBar
-                user={user}
-                theme={theme}
-                toggle={toggle}
-                settoggle={settoggle}
-            />
             <DrawerContent
                 toggle={toggle}
                 settoggle={settoggle}
                 Cards={Cards}
-                Greet={Greet}
-                Featured={Card01}
+                Greet={true}
                 grid_system={true}
+                user={user}
+                greeting_way={Greeting_way}
+                Featured={Card01}
+                theme={theme}
             />
         </div>
     )
@@ -85,44 +119,12 @@ export const DashBoard = ({ user, uid, theme }) => {
 const mapStateToProps = (state) => ({
     user: state.userDetails.user,
     uid: state.userDetails.uid,
-    theme: state.themeDetails.theme
+    theme: state.themeDetails.theme,
+    Students: state.userDetails.Allusers,
+    Token: state.userDetails.token,
+    loading: state.loadingDetails.loading,
+
 })
 
-const mapDispatchToProps = {
+export default connect(mapStateToProps)(DashBoard)
 
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DashBoard)
-
-const Cards = [
-    {
-        parameters: {
-            users: [{
-                user: "Raghav Bhat",
-                email: "raghavyua@gmail.com"
-            },
-            {
-                user: "Raghava Bhat",
-                email: "raghavyua@il.com"
-            },
-            {
-                user: "Raghav Bhat",
-                email: "raghavyua@gmail.com"
-            },
-            {
-                user: "Raghava Bhat",
-                email: "raghavyua@il.com"
-            },
-            {
-                user: "Raghav Bhat",
-                email: "raghavyua@gmail.com"
-            },
-            {
-                user: "Raghava Bhat",
-                email: "raghavyua@il.com"
-            }
-            ]
-        },
-        Component: Card02
-    },
-]

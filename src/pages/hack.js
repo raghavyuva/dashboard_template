@@ -1,34 +1,38 @@
-import React, { Component, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect, useDispatch } from 'react-redux'
 import Header_Banner from '../global_components/Header_Banner';
 import { NavBar } from '../global_components/NavBar';
 import DrawerContent from '../utils/DrawerContent';
-import Card02 from '../global_components/DashBoardCard/Card02';
 
-export const Users = ({ user, uid, theme, Allusers }) => {
+export const Settings = ({
+    user,
+    uid,
+    theme,
+    Allusers
+}) => {
     const dispatch = useDispatch();
     const [toggle, settoggle] = useState(false);
     const [display_banner, setdisplay_banner] = useState(true);
-    const Cards = [
-        {
-            parameters: {
-                Allusers
-            },
-            Component: Card02
-        },
-    ]
+    
     return (
         <div className='bg-primary-background '>
             <Header_Banner
                 display_banner={display_banner}
                 setdisplay_banner={setdisplay_banner}
             />
+            <NavBar
+                user={user}
+                theme={theme}
+                toggle={toggle}
+                settoggle={settoggle}
+            />
             <DrawerContent
                 toggle={toggle}
                 settoggle={settoggle}
                 Greet={true}
-                grid_system={false}
-                Cards={Cards}
+                grid_system={true}
+                user={user}
+                greettext='here is how your project behaving'
             />
         </div>
     )
@@ -45,4 +49,4 @@ const mapDispatchToProps = {
 
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Users)
+export default connect(mapStateToProps, mapDispatchToProps)(Settings)

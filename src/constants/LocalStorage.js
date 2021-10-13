@@ -3,4 +3,5 @@ export const GET_FROM_LOCAL_STORAGE = {
 	uid: localStorage.getItem("uid"),
 	length: localStorage.length,
 	Theme: localStorage.getItem("theme"),
+	// prefer_type: localStorage.getItem("theme_preference"),
 };
